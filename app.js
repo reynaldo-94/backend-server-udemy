@@ -5,9 +5,21 @@
 // Cargo la libreria de express
 var express = require('express');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 // Inicializar variables, aqui es donde ya vamos a usar las librerias
 var app = express();
+
+// Body Parser
+// parse application/x-www-form-urlencoded
+// Estos son midddleware, son funciones que se van a ejecutar siempre, cuando una peitcion entre siepre va apsar por aca, si hay algo en el body que nosotros estemos enviando el body parser lo va a tomar y nos va a crear el objeto de JS para qu elo pdamos utililzar en cualquier lugar
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
+// Importar rutas
+var appRoutes = require('./routes/app');
+var usuarioRoutes = require('./routes/usuario');
+var loginRoutes = require('./routes/login');
 
 // Conexion a la base de datos
 //openUri(password de la BD)
@@ -18,16 +30,11 @@ mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', (err, res) =
 });
 
 // Rutas
-// get(ruta,funcion de callback)
-// next -> lo que le dice a express es que cuando se ejecute que siga a la siguiente ejecucion, normalmente no se usan en la peticiones get,post,put etc, estos son bien usados cuando trabajamos con algun middleware
-// Con esto defino una ruta
-app.get('/', (req, res, next) => {
-    // 200 es exitoso, 404 el recurso no fue encontrado, quiero que la respuestat sea un json
-    res.status(200).json({
-        ok: true,
-        mensaje: 'Peticion realizada correctamente'
-    });
-})
+// Defino el middleware
+// Cuando cualquier peticion haga match con '/' quiero que use el appRoutes
+app.use('/usuario', usuarioRoutes);
+app.use('/login', loginRoutes);
+app.use('/', appRoutes);
 
 // Escuchar peticiones
 // listen(Quiero que este escuchando el puerto 3000 o culaquier otro puerto que no usemos, algun mensaje para saber si logro levantar o sucedio algun error)

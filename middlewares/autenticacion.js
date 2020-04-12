@@ -6,9 +6,8 @@ var SEED = require('../config/config').SEED;
 // Verificar token
 // ==========================================
 
-// Aca yo quiero hacer es, Leer el token que yoquiero recibir del url, procesarlo, ver si esvalido, que no ha expirado y si funciona, si es valido, quiero continuar
-// Yo pongo el middleware aca, px despues de aca viene todas las peticiones que va na requerir autenticacion
-// Cualquier ruta que esta abajo va a pasar por aca
+// Aca yo quiero hacer es, Leer el token que yo quiero recibir de la url, procesarlo, ver si es valido, que no ha expirado y si funciona, si es valido, quiero continuar
+// Yo pongo el middleware aca, px despues de aca viene todas las peticiones que va a requerir autenticacion
 
 exports.verificaToken = function(req, res, next) {
 

@@ -10,7 +10,7 @@ var rolesValidos = {
 };
 
 // Defino lo que es el usuario esquema
-// Esto es una funcion que recibe un objeto de JS con la configuracion del registro que nosostros queremos hacer o la ocnfiguracion del esquema que nosostrs vamos a definir en este momento
+// Esto es una funcion que recibe un objeto de JS con la configuracion del registro que nosostros queremos hacer o la configuracion del esquema que nosostros vamos a definir en este momento
 var usuarioSchema = new Schema({
     // Dentro de este esquema van cada uno de los campos de la Base de datos
     nombre: { type: String, required: [true, 'El nombre es necesario'] },

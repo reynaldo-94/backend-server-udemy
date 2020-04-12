@@ -1,10 +1,6 @@
 var express = require('express');
 var bcrypt = require('bcryptjs');
 
-var jwt = require('jsonwebtoken');
-
-//var SEED = require('../config/config').SEED;
-
 var mdAutenticacion = require('../middlewares/autenticacion');
 
 var app = express();
@@ -18,24 +14,35 @@ var Usuario = require('../models/usuario');
 
 app.get('/', (req, res, next) => {
 
+    // Espero a que venga en los parametros del query desde, como es un paramtro opcional pongo 0
+    var desde = req.query.desde || 0;
+    // Lo convierto a numerico, no puede recibir otro tipo de dato que no sea number
+    desde = Number(desde);
     // En el find puedo decir que campos quiero mostrar
     // Aca le digo buscate todos los registros en la tabla de usuarios y me interesan solo el nombre email img y role
+    // Con el skip le digo que se salte el limit, osea que empieze en 5 u en otro numero
     Usuario.find({}, 'nombre email img role')
+        .skip(desde)
+        .limit(5)
         .exec((err, usuarios) => {
             // Un error de este tipo es un error de base de datos
             if (err) {
                 return res.status(200).json({
                     ok: true,
-                    mensaje: 'Erro cargando usuarios',
-                    errors: error
+                    mensaje: 'Error cargando usuarios',
+                    errors: err
                 });
             }
-
-            // Si no sucede ningun error
-            return res.status(200).json({
-                ok: true,
-                mensaje: usuarios
+            // Cuento cuanto usuarios hay
+            Usuario.count({}, (err, conteo) => {
+                // Si no sucede ningun error
+                return res.status(200).json({
+                    ok: true,
+                    mensaje: usuarios,
+                    total: conteo
+                });
             });
+
         })
 
 
@@ -76,7 +83,7 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
         usuario.save((err, usuarioGuardado) => {
 
             if (err) {
-                // Aqui seria un error 400 px puede ser que noeste mandando el nombre, o que no venga el nombre o correo, o que el correo sea igual a otro, etc
+                // Aqui seria un error 400 px puede ser que no este mandando el nombre, o que no venga el nombre o correo, o que el correo sea igual a otro, etc
                 return res.status(400).json({
                     ok: false,
                     mensaje: 'Error al actualizar usuario',
@@ -101,8 +108,8 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
 // ==========================================
 // Si nosotros necesitamos ejecutar cualquier funcion o cualquier autnticacion simplemente se puede poner como 2do parametro
 app.post('/', mdAutenticacion.verificaToken, (req, res) => {
-    // body-parser : Es una libreria que toma la infomracion del post y nos crea un objeto de JS que ya podemos utilizar sin hacer nada nosotros
-    var body = req.body; // Esto va a funcionar solo si tenemos el body parse, sino vamos a tener un unfined
+    // body-parser : Es una libreria que toma la informacion del post y nos crea un objeto de JS que ya podemos utilizar sin hacer nada nosotros
+    var body = req.body; // Esto va a funcionar solo si tenemos el body parse, sino vamos a tener un undefined
 
     // Definicion para crear un nuevo usuario
     var usuario = new Usuario({

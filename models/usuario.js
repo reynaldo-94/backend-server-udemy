@@ -17,7 +17,9 @@ var usuarioSchema = new Schema({
     email: { type: String, unique: true, required: [true, 'El correo es necesario'] },
     password: { type: String, required: [true, 'La contraseña es necesaria'] },
     img: { type: String, required: false },
-    role: { type: String, required: true, default: 'USER:ROLE', enum: rolesValidos } // Default: Valor por defecto
+    role: { type: String, required: true, default: 'USER_ROLE', enum: rolesValidos }, // Default: Valor por defecto
+    // Si es true quiere decir que el usuario se creo por google, si es false quiere decir que el usuario no puede antenticarse por google px ya previamente el mismo uso su correo para autenticar en nuestra aplicacion
+    google: { type: Boolean, default: false }
 
 });
 
